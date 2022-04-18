@@ -7,7 +7,7 @@ public class MessageParser {
 	private int line;
 	private String newData;
 	
-	public static StringBuilder parse(byte[] incomingMsg)
+	public static String parse(byte[] incomingMsg)
     {
         if(incomingMsg==null)
             return null;
@@ -21,7 +21,7 @@ public class MessageParser {
             i++;
         }
         
-        return message;
+        return message.toString();
     }
 	
 }
