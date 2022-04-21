@@ -1,32 +1,12 @@
 package root;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.ServerSocket;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import root.handler.TcpHandler;
-import root.handler.UdpHandler;
+import root.service.ConnectionService;
 
 public class Server {
 	
-	public static final int port = 9453;
-	
 	public static void main(String[] args) throws IOException {
-		DatagramSocket udpSocket = new DatagramSocket(port);
-        ServerSocket tcpSocket = new ServerSocket(port);
-        Thread tcp, udp;
-        
-        ExecutorService mainExecutor = Executors.newFixedThreadPool(2);
-        tcp = new Thread(new UdpHandler(udpSocket));
-        mainExecutor.execute(tcp);
-        udp = new Thread(new TcpHandler(tcpSocket));
-        mainExecutor.execute(udp);
-        
-        System.out.println("Main tcp: "+tcp.getId()+"\tMain UDP: "+udp.getId());
-        mainExecutor.shutdown();
+		ConnectionService.init();
     }
 	
 }
