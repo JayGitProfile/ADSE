@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 public class UdpHandler implements Runnable{
 
 	DatagramSocket udpSocket;
+	final ExecutorService udpExecutor = Executors.newCachedThreadPool();
 	
 	public UdpHandler(DatagramSocket udpSocket) {
 		this.udpSocket = udpSocket;
@@ -20,18 +21,16 @@ public class UdpHandler implements Runnable{
 	public void run() {
 		byte[] incomingMsg = new byte[100000];
         DatagramPacket packet = null;
-        
-        while (true) {
+        while (true) { //listens for incoming msgs
             try {
             	System.out.println("UDP");
             	packet = new DatagramPacket(incomingMsg, incomingMsg.length);
 				udpSocket.receive(packet);
 				
-				ExecutorService executorService = Executors.newCachedThreadPool();  
-				executorService.execute(new Thread(new MsgHandler(incomingMsg, true)));
-	  
+				Thread udpT = new Thread(new MsgHandler(incomingMsg, true));				
+				udpExecutor.execute(udpT);
+				
 	            incomingMsg = new byte[100000];
-
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

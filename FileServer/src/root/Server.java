@@ -17,12 +17,16 @@ public class Server {
 	public static void main(String[] args) throws IOException {
 		DatagramSocket udpSocket = new DatagramSocket(port);
         ServerSocket tcpSocket = new ServerSocket(port);
+        Thread tcp, udp;
         
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
-        executorService.execute(new Thread(new UdpHandler(udpSocket)));
-        executorService.execute(new Thread(new TcpHandler(tcpSocket)));
+        ExecutorService mainExecutor = Executors.newFixedThreadPool(2);
+        tcp = new Thread(new UdpHandler(udpSocket));
+        mainExecutor.execute(tcp);
+        udp = new Thread(new TcpHandler(tcpSocket));
+        mainExecutor.execute(udp);
         
-        executorService.shutdown();
+        System.out.println("Main tcp: "+tcp.getId()+"\tMain UDP: "+udp.getId());
+        mainExecutor.shutdown();
     }
 	
 }

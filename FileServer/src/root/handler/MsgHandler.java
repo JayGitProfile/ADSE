@@ -13,7 +13,6 @@ public class MsgHandler implements Runnable {
 	@Override
 	public void run() {
 		System.out.println("Msg: " + this.msg);
-		System.out.println("end");
 	}
 
 	
