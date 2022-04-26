@@ -1,4 +1,4 @@
-FileServer - Server code
+FileServerMvn - Server code (moved from simple java project to maven structure)
 Client beta - temporary code to check server connectivity
 ClientBE - SpringBoot project where actual client code will be
 

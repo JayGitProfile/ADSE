@@ -45,7 +45,6 @@ public class ConnectionService {
 		byte msgBuffer[] = null;
 		
 		try {
-			output.writeUTF("client 2 connected");
 			msgBuffer = msg.getBytes();
 			packet = new DatagramPacket(msgBuffer, msgBuffer.length, ip, port);
 			
