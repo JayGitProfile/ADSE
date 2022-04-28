@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DirectoryService {
+public class FileService {
 
 	final String serverDirPath = System.getProperty("user.home")+"/Desktop/ADSE/Server";
 	

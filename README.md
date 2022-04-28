@@ -1,11 +1,5 @@
-FileServerMvn - Server code (moved from simple java project to maven structure)
-Client beta - temporary code to check server connectivity
-ClientBE - SpringBoot project where actual client code will be
+Single client be kickstarts multiple clients
+Based on volatile client count
+Not needed
 
-Main thread (
-	ExecutorService(UDP, TCP) - 2 fixed threads
-)
-
-. 2 fixed UDP and TCP threads keep listening for msgs 
-. Every incoming msg/command will be handled by a new concurrent thread
-. UDP & TCP handlers create multiple Thread(MsgHandler)
+Can use multiple client jars instead

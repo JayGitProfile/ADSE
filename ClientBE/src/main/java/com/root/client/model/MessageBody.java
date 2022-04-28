@@ -7,12 +7,11 @@ public class MessageBody {
 	
 	public MessageBody(){}
 	
-	public MessageBody(String clientId, int command) {
+	public MessageBody(int clientId, int command) {
 		super();
-		this.clientId = clientId;
+		this.clientId = "Client"+Integer.toString(clientId);
 		this.command = command;
 	}
-
 
 	public String getClientId() {
 		return clientId;
