@@ -1,18 +1,18 @@
 package com.root.client.model;
 
-public class MessageBody {
+import com.root.client.ClientBeApplication;
 
-	private String clientId;
+public class MsgBody {
+
+	private String clientId = ClientBeApplication.clientId;
 	private int command; //every number denotes a command
 	
-	public MessageBody(){}
+	public MsgBody(){}
 	
-	public MessageBody(String clientId, int command) {
+	public MsgBody(int command) {
 		super();
-		this.clientId = clientId;
 		this.command = command;
 	}
-
 
 	public String getClientId() {
 		return clientId;
