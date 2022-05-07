@@ -8,35 +8,42 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import root.Server;
+import root.service.ConnectionService;
+
 public class TcpHandler implements Runnable{
 
 	ServerSocket tcpSocket;
 	DataInputStream input;
 	DataOutputStream output;
+
 	final ExecutorService tcpEecutor = Executors.newCachedThreadPool();
-	
+
 	public TcpHandler(ServerSocket tcpSocket) {
 		this.tcpSocket = tcpSocket;
 	}
-	
+
 	public TcpHandler() {}
-	
+
 	public void run() {
-		while(true) { //listens for incoming commands
-			try {
-				System.out.println("TCP");
-				Socket socket = tcpSocket.accept();
-				input = new DataInputStream(socket.getInputStream());
-				output = new DataOutputStream(socket.getOutputStream());
-				String inputString = ""; 
-				inputString = input.readUTF();
-				
-				Thread tcpT = new Thread(new MsgHandler(inputString, false));
-	            tcpEecutor.execute(tcpT);
-			} catch (IOException e) {
-				
-				e.printStackTrace();
+		Server.console("TCP THREAD BEGIN", "*");
+		try {
+			Socket socket = tcpSocket.accept();
+			input = new DataInputStream(socket.getInputStream());
+			output = new DataOutputStream(socket.getOutputStream());
+			while(true) { //listens for incoming commands
+				try {
+					String inputString = ""; 
+					inputString = input.readUTF();
+					Server.console("INCOMING TCP COMMAND", "~");
+					Thread tcpT = new Thread(new MsgHandler(inputString, false));
+					tcpEecutor.execute(tcpT);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
 	}
 

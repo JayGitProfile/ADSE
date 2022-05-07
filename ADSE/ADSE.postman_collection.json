@@ -1,0 +1,29 @@
+{
+	"info": {
+		"_postman_id": "b1c138d5-9c97-4fb1-9b84-9ea54300b36c",
+		"name": "ADSE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "pass udp msg",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/client/somemsghere",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"client",
+						"somemsghere"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

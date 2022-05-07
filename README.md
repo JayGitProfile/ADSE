@@ -9,3 +9,6 @@ Main thread (
 . 2 fixed UDP and TCP threads keep listening for msgs 
 . Every incoming msg/command will be handled by a new concurrent thread
 . UDP & TCP handlers create multiple Thread(MsgHandler)
+
+
+Paste ADSE folder on desktop
