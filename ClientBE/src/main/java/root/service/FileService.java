@@ -127,8 +127,12 @@ public class FileService {
 					writer.close();
 					fReader.close();
 					
-					Map<String, Object> map = new HashMap<>();
-					map.put("update",fileUpdateObj);
+					//Map<String, Object> map = new HashMap<>();
+					//map.put("update",fileUpdateObj);
+					//map.put("clientId", ClientBeApplication.clientId);
+					Map<String, Object> map = fileUpdateObj.covertToMap();
+					map.put("do", "update");
+					
 					updateToServer(map);
 				}
 			}
@@ -141,6 +145,7 @@ public class FileService {
 	
 	public void updateToServer(Map<String, Object> map) {
 		try {
+			System.out.println("to server");
 			ConnectionService.sendData(SerializationUtils.serialize((Serializable) map));
 			
 		} catch (Exception e) {

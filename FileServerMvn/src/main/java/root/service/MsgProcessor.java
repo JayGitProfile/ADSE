@@ -1,6 +1,10 @@
 package root.service;
 
+import java.io.Serializable;
 import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.SerializationUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,13 +32,17 @@ public class MsgProcessor {
 	}
 
 	public void udpProcess(Map<String, Object> map) {
-		switch(map.keySet().iterator().next()) {
+		System.out.println(map.keySet());
+		switch((String)map.get("do")) {
 			case "update":
-				FileUpdateInfoModel obj = (FileUpdateInfoModel) map.get("update");
-				Server.console(obj.getClientId()+" : Update "+obj.getFileName(),"<");
+				FileUpdateInfoModel fileObj = new FileUpdateInfoModel(map);
+				Server.console(fileObj.getClientId()+" : Update "+fileObj.getFileName(),"<");
 				
 				fileService = new FileService();
 				//fileService.updateFile(obj);
+				
+				Server.console("Updating to other clients",">");
+				ConnectionService.sendData(SerializationUtils.serialize((Serializable) map));
 		}
 	}
 }

@@ -12,7 +12,17 @@ public class ClientBeApplication {
 
 	public static final int reqDirCopy = 1; //request a copy of the server directory
 	
+	public static void console(String op, String character) {
+		for(int i=0;i<10;i++)
+			System.out.print(character);
+		System.out.print(" "+op+" ");
+		for(int i=0;i<10;i++)
+			System.out.print(character);
+		System.out.println("\n");
+	}
+	
 	public static void main(String[] args) {
+		System.setProperty("server.port", "8080");
 		SpringApplication.run(ClientBeApplication.class, args);
 		ConnectionService.init();
 	}

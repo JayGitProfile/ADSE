@@ -12,13 +12,14 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import root.handler.UdpHandler;
 import root.model.MsgBody;
 
 @Service
 public class ConnectionService {
 
-	private static final int port = 9453;
-	public static final int port2 = 9454;
+	private static final int outPort = 9453; //send
+	public static final int inPort = 9555; //receive
 
 	static DataInputStream input;
 	static DataOutputStream output;
@@ -31,12 +32,12 @@ public class ConnectionService {
 
 	public static void init() {
 		sender();
+		listener();
 	}
 	
 	public static void sender() {
 		try {
-			System.out.println(port);
-			socket = new Socket("localhost", port);
+			socket = new Socket("localhost", outPort);
 			input = new DataInputStream(socket.getInputStream());
 			output = new DataOutputStream(socket.getOutputStream());	
 			udpSocket = new DatagramSocket();
@@ -51,9 +52,9 @@ public class ConnectionService {
 	
 	public static void listener() {
 		try {
-			udpSocket2 = new DatagramSocket(port2);
-			Thread listener = new Thread();
-			
+			udpSocket2 = new DatagramSocket(inPort);
+			Thread listener = new Thread(new UdpHandler(udpSocket2));
+			listener.start();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -65,7 +66,7 @@ public class ConnectionService {
 		byte msgBuffer[] = null;
 		try {
 			msgBuffer = msg.getBytes(); //msgService.compress2(msg);
-			packet = new DatagramPacket(msgBuffer, msgBuffer.length, ip, port);
+			packet = new DatagramPacket(msgBuffer, msgBuffer.length, ip, outPort);
 
 			udpSocket.send(packet);
 		} catch (IOException e) {
@@ -75,7 +76,7 @@ public class ConnectionService {
 	
 	public static void sendData(byte[] msg) { //obj -> string -> byte
 		try {
-			packet = new DatagramPacket(msg, msg.length, ip, port);
+			packet = new DatagramPacket(msg, msg.length, ip, outPort);
 
 			udpSocket.send(packet);
 		} catch (IOException e) {

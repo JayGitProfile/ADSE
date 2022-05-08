@@ -1,6 +1,8 @@
 package root.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FileUpdateInfoModel implements Serializable{
 
@@ -10,6 +12,15 @@ public class FileUpdateInfoModel implements Serializable{
 	public String newContent;
 	public String original;
 	public String clientId;
+
+	public FileUpdateInfoModel() {}
+
+	public FileUpdateInfoModel(Map<String, Object> map) {
+		this.fileName = (String) map.get("fileName");
+		this.pageIndex = (Integer) map.get("pageIndex");
+		this.newContent = (String) map.get("newContent");
+		this.original = (String) map.get("original");
+	}
 
 	public String getNewContent() {
 		return newContent;
@@ -41,6 +52,18 @@ public class FileUpdateInfoModel implements Serializable{
 	public void setOriginal(String original) {
 		this.original = original;
 	}
+	
+	public Map<String, Object> covertToMap() {
+		Map<String, Object> map = new HashMap<>();
+		map.put("clientId", clientId);
+		map.put("fileName", fileName);
+		map.put("pageIndex", pageIndex);
+		map.put("newContent", newContent);
+		map.put("original", original);
+		
+		return map;
+	}
+	
 	@Override
 	public String toString() {
 		return "FileUpdateInfoModel [fileName=" + fileName + ", pageIndex=" + pageIndex + ", newContent=" + newContent
