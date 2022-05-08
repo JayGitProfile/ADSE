@@ -15,25 +15,18 @@ import root.service.ConnectionService;
 @RestController
 public class TestController {
 	
-	@Autowired
-	ConnectionService conn;
-	
-	@GetMapping("/client/{command}")
+	@GetMapping("/tcp/{command}")
 	public void testMe2(@PathVariable("command") int command) 
 			throws IOException {
-		MsgBody msg = new MsgBody(command);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonString = mapper.writeValueAsString(msg);
 	      
-		conn.sendData(jsonString);
+		ConnectionService.sendCommand(command);
 	}
 	
 	@GetMapping("/udp/{command}")
 	public void testMe(@PathVariable("command") String command) 
 			throws IOException {
 	      
-		conn.sendData(command);
+		ConnectionService.sendData(command);
 	}
 	
 }

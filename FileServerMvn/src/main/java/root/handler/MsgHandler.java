@@ -6,11 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.SerializationUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import root.model.FileUpdateInfoModel;
-import root.model.TcpMsgBody;
-import root.service.FileService;
+import root.service.MsgProcessor;
 
 public class MsgHandler implements Runnable {
 
@@ -42,24 +38,20 @@ public class MsgHandler implements Runnable {
     }
 	
 	public void run() { //to test concurrency add while loop with thread sleep
-		ObjectMapper mapper = new ObjectMapper();
+		MsgProcessor processor = new MsgProcessor();
 		try {
 			if(!isUdp) { //tcp
-				TcpMsgBody obj = mapper.readValue(msg, TcpMsgBody.class);
-				System.out.println(obj.getClientId()+" says: "+obj.getCommand());
+				processor.tcpProcess(msg);
 			}
-			else {
+			else { //udp
+				
 				ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(msgBuffer));
 				Map<String, Object> map = (Map) SerializationUtils.deserialize(msgBuffer);
-				System.out.println(map.keySet());
-				//FileUpdateInfoModel obj = (FileUpdateInfoModel) SerializationUtils.deserialize(msgBuffer);
-				//System.out.println(obj);
-				FileService fileService = new FileService();
-				//fileService.updateFile(obj);
+				processor.udpProcess(map);
+								
 				iStream.close();
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

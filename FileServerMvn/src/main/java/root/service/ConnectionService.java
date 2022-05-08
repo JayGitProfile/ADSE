@@ -13,6 +13,8 @@ import root.handler.UdpHandler;
 public class ConnectionService {
 
 	public static final int port = 9453;
+	public static final int port2 = 9454;
+	
 	private static DatagramSocket udpSocket;
 	private static ServerSocket tcpSocket;
 	public static ExecutorService mainExecutor;

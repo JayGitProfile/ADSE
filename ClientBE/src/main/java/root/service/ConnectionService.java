@@ -18,10 +18,11 @@ import root.model.MsgBody;
 public class ConnectionService {
 
 	private static final int port = 9453;
+	public static final int port2 = 9454;
 
 	static DataInputStream input;
 	static DataOutputStream output;
-	static DatagramSocket udpSocket;
+	static DatagramSocket udpSocket, udpSocket2;
 	static DatagramPacket packet;
 	static InetAddress ip;
 	static Socket socket;
@@ -29,7 +30,10 @@ public class ConnectionService {
 	MsgService msgService = new MsgService();
 
 	public static void init() {
-		System.out.println("init");
+		sender();
+	}
+	
+	public static void sender() {
 		try {
 			System.out.println(port);
 			socket = new Socket("localhost", port);
@@ -40,18 +44,17 @@ public class ConnectionService {
 			ip = InetAddress.getLocalHost();
 			
 			sendCommand(0);
-			//TCP command = 0
-			//MsgBody msg = new MsgBody(0);
-			//output.writeUTF(mapper.writeValueAsString(msg));
-			/*
-			for(int i=0;i<4;i++) {
-				output.writeUTF(mapper.writeValueAsString(msg));
-			}
-			output.writeUTF(mapper.writeValueAsString(msg));
-			output = new DataOutputStream(socket.getOutputStream());	
-			String st = "mmmm";
-			output.writeUTF(st);
-*/
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void listener() {
+		try {
+			udpSocket2 = new DatagramSocket(port2);
+			Thread listener = new Thread();
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -61,7 +64,6 @@ public class ConnectionService {
 	public static void sendData(String msg) { //obj -> string -> byte
 		byte msgBuffer[] = null;
 		try {
-			System.out.println("to server "+msg);
 			msgBuffer = msg.getBytes(); //msgService.compress2(msg);
 			packet = new DatagramPacket(msgBuffer, msgBuffer.length, ip, port);
 

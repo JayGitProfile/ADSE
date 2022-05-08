@@ -1,11 +1,11 @@
 package root.model;
 
-public class TcpMsgBody {
+public class TcpCommandModel {
 	
 	private String clientId;
 	private int command; //every number denotes a command
 	
-	public TcpMsgBody(){}
+	public TcpCommandModel(){}
 
 	public String getClientId() {
 		return clientId;
