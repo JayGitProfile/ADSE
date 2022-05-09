@@ -94,10 +94,10 @@ function FilesList() {
 
   useEffect(() => {
     if(!connected) {
-    let socket = new WebSocket("ws://localhost:8080/").onopen(() => {
+    let socket = new WebSocket("ws://localhost:8080").onopen= () => {
       getFilesList()
       setConnected(true);
-    });
+    };
     socket.onmessage = (message) => {
       getFilesList();
     }
