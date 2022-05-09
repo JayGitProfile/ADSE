@@ -26,6 +26,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import TextEditor from '../TextEditor/TextEditor'
 
 function FilesList() {
+  const [connected,setConnected] = React.useState(false);
   const style = {
     position: 'absolute',
     top: '50%',
@@ -38,8 +39,8 @@ function FilesList() {
     boxShadow: 24,
     p: 4,
   };
-  let deleteFileName = ''
-  const [selectedFile,setselectedFile] = React.useState('')
+  const [deleteFileName,setDeleteName] = React.useState('');
+  const [selectedFile,setselectedFile] = React.useState('');
   const [Deleteopen, setDeleteOpen] = React.useState(false);
   const [EditOpen, setEditOpen] = React.useState(false);
 
@@ -49,7 +50,7 @@ function FilesList() {
   
 
   const handleDeleteOpen = (name) => {
-    deleteFileName = name
+    setDeleteName(name);
     setDeleteOpen(true);
   };
 
@@ -58,7 +59,8 @@ function FilesList() {
   };
 
   const handleDelete = () => {
-    axios.post(`localhost:8080/file/delete/${deleteFileName}`).then(() => {
+
+    axios.post(`http://localhost:8080/file/delete/${deleteFileName}`).then(() => {
       toast.success('File deleted Sucessfully');
     }).catch(
       toast.error('Unable to delete the file. Please Try again.')
@@ -67,7 +69,7 @@ function FilesList() {
   }
 
   const handleEditOpen = (row) => {
-    axios.get(`localhost:8080/file/read/${row.fileName}`).then(
+    axios.get(`http://localhost:8080/file/read/${row.fileName}`).then(
       result => {
         setselectedFile({result,fileName:row.fileName});
         setEditOpen(true);
@@ -82,10 +84,26 @@ function FilesList() {
   };
 
   const [files,setFiles] = React.useState([]);
-  useEffect(() => {
-    axios.get('localhost:8080/file/list').then(data => {
-      setFiles(data);
+
+
+  function getFilesList() {
+    axios.get('http://localhost:8080/file/list').then(data => {
+      setFiles(data.data);
     })
+  }
+
+
+  useEffect(() => {
+    if(!connected) {
+    let socket = new WebSocket("ws://localhost:9987").onopen= () => {
+      getFilesList()
+      setConnected(true);
+    }
+    socket.onmessage = (message) => {
+      debugger;
+      getFilesList();
+    }
+    }
   });
 
 
