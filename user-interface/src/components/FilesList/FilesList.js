@@ -2,7 +2,6 @@ import React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import './FilesList.css'
-import axios from 'axios';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -21,11 +20,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { useEffect } from 'react';
-import { Editor } from 'react-draft-wysiwyg';
-import '../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import TextEditor from '../TextEditor/TextEditor'
 
 function FilesList() {
-
   const style = {
     position: 'absolute',
     top: '50%',
@@ -38,15 +38,18 @@ function FilesList() {
     boxShadow: 24,
     p: 4,
   };
+  let deleteFileName = ''
+  const [selectedFile,setselectedFile] = React.useState('')
+  const [Deleteopen, setDeleteOpen] = React.useState(false);
+  const [EditOpen, setEditOpen] = React.useState(false);
 
   const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
   
-  const [Deleteopen, setDeleteOpen] = React.useState(false);
-  const [EditOpen, setEditOpen] = React.useState(false);
 
-  const handleDeleteOpen = () => {
+  const handleDeleteOpen = (name) => {
+    deleteFileName = name
     setDeleteOpen(true);
   };
 
@@ -54,18 +57,34 @@ function FilesList() {
     setDeleteOpen(false);
   };
 
-  const handleEditOpen = () => {
-    setEditOpen(true);
+  const handleDelete = () => {
+    axios.post(`localhost:8080/file/delete/${deleteFileName}`).then(() => {
+      toast.success('File deleted Sucessfully');
+    }).catch(
+      toast.error('Unable to delete the file. Please Try again.')
+    )
+    setDeleteOpen(false)
+  }
+
+  const handleEditOpen = (row) => {
+    axios.get(`localhost:8080/file/read/${row.fileName}`).then(
+      result => {
+        setselectedFile({result,fileName:row.fileName});
+        setEditOpen(true);
+        }
+        ).catch(err => {
+          toast.error("Unable to retrieve the file at this moment. Please try again later.");
+        })
   };
 
   const handleEditClose = () => {
     setEditOpen(false);
   };
 
-  let files = [{name:'largeFile', type:'mkv',size:12},{name:'small file', type:'txt',size:0.2}]
+  const [files,setFiles] = React.useState([{fileName:'alpha.txt', type:'txt'}]);
   useEffect(() => {
-    axios.get().then(data => {
-      files = JSON.parse(JSON.stringify(data));
+    axios.get('localhost:8080/file/list').then(data => {
+      setFiles(data);
     })
   });
 
@@ -93,7 +112,7 @@ function FilesList() {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row" align="right">
-                {row.name}
+                {row.fileName}
               </TableCell>
               <TableCell align="right">{row.size}</TableCell>
               <TableCell align="right">{row.createddate}</TableCell>
@@ -101,16 +120,16 @@ function FilesList() {
               <TableCell align="right">{row.lastmodified}</TableCell>
               <TableCell align="right">{row.modifiedby}</TableCell>
               <TableCell align="right">{row.syncstatus}</TableCell>
-              <TableCell align="right">{row.type == 'txt' ?  <span className='EditIcon'><Tooltip title="Edit"
-              placement="top"><EditIcon onClick={handleEditOpen}></EditIcon></Tooltip></span> : ''} 
+              <TableCell align="right">{row.type === 'txt' ?  <span className='EditIcon'><Tooltip title="Edit"
+              placement="top"><EditIcon onClick={()=>handleEditOpen(row)}></EditIcon></Tooltip></span> : ''} 
               <span className='DeleteIcon'><Tooltip title="Delete"
-              placement="top"><DeleteIcon onClick={handleDeleteOpen}></DeleteIcon></Tooltip></span></TableCell>
+              placement="top"><DeleteIcon onClick={() =>handleDeleteOpen(row.fileName)}></DeleteIcon></Tooltip></span></TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-
+    {(files.length === 0) ? <div className='nofiles'>There are no files. Please upload a new file to view it here.</div> : ''}
     <Dialog
         open={Deleteopen}
         TransitionComponent={Transition}
@@ -127,7 +146,7 @@ function FilesList() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteClose}>Cancel</Button>
-          <Button onClick={handleDeleteClose}><span style={{color:'red'}}>Delete</span></Button>
+          <Button onClick={handleDelete}><span style={{color:'red'}}>Delete</span></Button>
         </DialogActions>
       </Dialog>
 
@@ -136,8 +155,20 @@ function FilesList() {
       onClose={handleEditClose}
     >
       <Box sx={style}>
-      <Editor /></Box>
+        <TextEditor  originalfile={selectedFile}></TextEditor>
+      </Box>
     </Modal>
+    <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
  }

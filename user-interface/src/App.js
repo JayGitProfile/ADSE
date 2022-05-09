@@ -1,15 +1,18 @@
 import './App.css';
-import Gradient from 'rgt'
 import FilesList from './components/FilesList/FilesList';
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined';
 import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
 import { Tooltip } from '@mui/material';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import UploadIcon from '@mui/icons-material/Upload';
+import axios from 'axios';
+import syncicon from './resources/sync.png';
 
 function App() {
   const [isSuspended,setisSuspended] = useState(false);
+  let selectedFile = null
   function suspendorresume() {
     setisSuspended(!isSuspended)
     toast.dismiss()
@@ -19,25 +22,52 @@ function App() {
       toast.success("All tasks and transfers are now resumed");
     }
   }
+
+  function fileUpload() {
+    document.getElementById('fileUpload').click()
+  }
+
+  function onFileChange(e) {
+    e.preventDefault();
+    const info = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      selectedFile = {fileName:info.name,newContent:e.target.result};
+      axios.post('localhost:8080/file/create',selectedFile).then(
+        toast.success("File Uploaded Sucessfully")
+      ).catch(
+        toast.error('File upload failed! Please try again.')
+      )
+    };
+    reader.readAsText(e.target.files[0]);
+  }
   return (
     <div className="App">
-     <p className='gradient-text'>
-      <span>
-        <Gradient dir="left-to-right" from="#00DFD8" to="#007CF0"> WELCOME TO</Gradient>
-        <Gradient dir="left-to-right" from="#ffeb3b" to="#e91e63"> SYNC-FE</Gradient>
+     <p className='header'>
+      <span className='title'>
+      <img src={syncicon} style={{height:'60px',width:'65px',paddingBottom:'5px'}}></img>
+        SYNC-FE
       </span>
 
-      <span onClick={suspendorresume}>
-        { !isSuspended ? 
-       <Tooltip
-       title="suspend"
-       placement="top">
-     <PauseCircleOutlineOutlinedIcon fontSize='large'/></Tooltip> : 
-     <Tooltip
-     title="resume"
-     placement="top"><CachedOutlinedIcon fontSize='large'/>
-       </Tooltip> }
-      </span>
+      <div>
+        <input type="file" className='d-none' onChange={onFileChange} id='fileUpload' accept=".txt" />
+        <span onClick={fileUpload}>
+        <Tooltip
+        title="Upload new file"
+        placement="top">
+          <UploadIcon fontSize='large'></UploadIcon></Tooltip></span>
+        <span onClick={suspendorresume}>
+          { !isSuspended ? 
+        <Tooltip
+        title="suspend"
+        placement="top">
+      <PauseCircleOutlineOutlinedIcon fontSize='large'/></Tooltip> : 
+      <Tooltip
+      title="resume"
+      placement="top"><CachedOutlinedIcon fontSize='large'/>
+        </Tooltip> }
+        </span>
+      </div>
      </p>
 
      <FilesList/>

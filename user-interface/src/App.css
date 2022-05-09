@@ -2,14 +2,23 @@
   text-align: left;
   margin-top: 50px;
   margin:0px 60px;
+  color: rgb(105, 105, 105);
+  font-family: 'Roboto', sans-serif;
 }
 
 
-.gradient-text {
-  font-size: 35px;
+.header {
+  font-size: 30px;
   font-weight: bold;
-  font-family: 'Press Start 2P', cursive;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.title {
+  display: inline-flex;
+  align-items:center;
+}
+.d-none{
+  display: none !important;
 }
