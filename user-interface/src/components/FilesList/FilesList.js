@@ -26,6 +26,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import TextEditor from '../TextEditor/TextEditor'
 
 function FilesList() {
+  const [connected,setConnected] = React.useState(false);
   const style = {
     position: 'absolute',
     top: '50%',
@@ -82,10 +83,25 @@ function FilesList() {
   };
 
   const [files,setFiles] = React.useState([]);
-  useEffect(() => {
+
+
+  function getFilesList() {
     axios.get('localhost:8080/file/list').then(data => {
       setFiles(data);
     })
+  }
+
+
+  useEffect(() => {
+    if(!connected) {
+    let socket = new WebSocket("localhost:8080").onopen(() => {
+      getFilesList()
+      setConnected(true);
+    });
+    socket.onmessage = (message) => {
+      getFilesList();
+    }
+    }
   });
 
 
