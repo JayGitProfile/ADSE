@@ -20,6 +20,7 @@ public class FileUpdateInfoModel implements Serializable{
 		this.pageIndex = (Integer) map.get("pageIndex");
 		this.newContent = (String) map.get("newContent");
 		this.original = (String) map.get("original");
+		this.clientId = (String) map.get("clientId");
 	}
 
 	public String getNewContent() {

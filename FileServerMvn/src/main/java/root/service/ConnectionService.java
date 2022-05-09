@@ -55,28 +55,35 @@ public class ConnectionService {
 	}
 
 	public static void listener() {
-		Thread tcp, udp;
 		try {
 			mainExecutor = Executors.newFixedThreadPool(4);
+			mainExecutor.execute(startListener(inPort1, false));
+			mainExecutor.execute(startListener(inPort1, true));
+			mainExecutor.execute(startListener(inPort2, false));
+			mainExecutor.execute(startListener(inPort2, true));
 			
-			tcpSocket = new ServerSocket(inPort1);
-			udpSocket = new DatagramSocket(inPort1);
-			udp = new Thread(new UdpHandler(udpSocket));
-			tcp = new Thread(new TcpHandler(tcpSocket));
-			mainExecutor.execute(udp);
-			mainExecutor.execute(tcp);
-			
-			tcpSocket = new ServerSocket(inPort2);
-			udpSocket = new DatagramSocket(inPort2);
-			udp = new Thread(new UdpHandler(udpSocket));
-			tcp = new Thread(new TcpHandler(tcpSocket));
-			mainExecutor.execute(udp);
-			mainExecutor.execute(tcp);
-
 			mainExecutor.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static Thread startListener(int port, boolean isUdp) {
+		Thread T = null;
+		try {
+			if(isUdp) {
+				udpSocket = new DatagramSocket(port);
+				T = new Thread(new UdpHandler(udpSocket));
+			}
+			else {
+				tcpSocket = new ServerSocket(port);
+				T = new Thread(new TcpHandler(tcpSocket));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return T;
 	}
 
 	//for udp

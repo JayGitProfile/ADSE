@@ -1,7 +1,9 @@
 package root.service;
 
+import java.io.Serializable;
 import java.util.Map;
-import java.util.Set;
+
+import org.apache.commons.lang3.SerializationUtils;
 
 import root.ClientBeApplication;
 import root.model.FileUpdateInfoModel;
@@ -14,7 +16,20 @@ public class MsgProcessor {
 		switch((String)map.get("do")) {
 			case "update":
 				FileUpdateInfoModel fileObj = new FileUpdateInfoModel(map);
-				System.out.println(fileObj);
+				fileService = new FileService();
+				fileService.updateFile(fileObj, false);
+				ClientBeApplication.console("File Update from: "+fileObj.getClientId(), "<");
+				break;
+				
+			case "create":
+				fileService = new FileService();
+				fileService.createFile((String)map.get("fileName"), false);
+				break;
+				
+			case "delete":
+				fileService = new FileService();
+				fileService.deleteFile((String)map.get("fileName"), false);
+				break;
 		}
 	}
 }

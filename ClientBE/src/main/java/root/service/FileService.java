@@ -94,7 +94,8 @@ public class FileService {
 		return map;
 	}
 	
-	public void updateFile(FileUpdateInfoModel fileUpdateObj) {
+	public Map<String, Object> updateFile(FileUpdateInfoModel fileUpdateObj, boolean updateToServer) {
+		Map<String, Object> responseMap = new HashMap<>();
 		try {
 			File fOld = new File(path+"/"+fileUpdateObj.getFileName());
 			File fNew = new File(path+"/"+fileUpdateObj.getFileName());
@@ -130,22 +131,31 @@ public class FileService {
 					//Map<String, Object> map = new HashMap<>();
 					//map.put("update",fileUpdateObj);
 					//map.put("clientId", ClientBeApplication.clientId);
-					Map<String, Object> map = fileUpdateObj.covertToMap();
-					map.put("do", "update");
 					
-					updateToServer(map);
+					if(updateToServer) {
+						Map<String, Object> map = fileUpdateObj.covertToMap();
+						map.put("do", "update");
+						
+						updateToServer(map);
+					}
 				}
+				responseMap.put("code", 200);
+			}
+			else {
+				responseMap.put("code", 400);
+				responseMap.put("msg", "File does not exist");
 			}
 		}
 		catch(Exception e) {
 			System.out.println("Error: "+e.getLocalizedMessage());
 			e.printStackTrace();
 		}
+		
+		return responseMap;
 	}
 	
 	public void updateToServer(Map<String, Object> map) {
 		try {
-			System.out.println("to server");
 			ConnectionService.sendData(SerializationUtils.serialize((Serializable) map));
 			
 		} catch (Exception e) {
@@ -154,30 +164,63 @@ public class FileService {
 		
 	}
 	
-	/*
-	public void updateFile(FileUpdateInfoModel fileUpdateObj) {
+	public Map<String, Object> createFile(String fileName, boolean updateToServer) {
+		Map<String, Object> responseMap = new HashMap<>();
 		try {
-			File file = new File(path+"/"+fileUpdateObj.getFileName());
-			if(file.exists()) {
-				System.out.println("found");
-				FileReader fReader = new FileReader(file);
-				BufferedReader bReader = new BufferedReader(fReader);
-				String line;
-				int start = (pageIndex*linesPerPage)-(linesPerPage-1);
-				
-				for(int i=1;(line=bReader.readLine())!=null && i<=(pageIndex*linesPerPage);i++) {
-					if(i>=start) {
-						fileDataList.add(line);
-					}
+			File file = new File(path+"/"+fileName);
+			
+			if(!file.exists()) {
+				ClientBeApplication.console("Creating new file: "+fileName,"~");
+				file.createNewFile();
+				if(updateToServer) {
+					Map<String, Object> map = new HashMap<>();
+					map.put("do", "create");
+					map.put("fileName", fileName);
+					map.put("clientId", ClientBeApplication.clientId);
+					ClientBeApplication.console("New file creation to server: "+fileName,">");
+					updateToServer(map);
 				}
-				fReader.close();
+				responseMap.put("code", 200);
+			}
+			else {
+				responseMap.put("code", 400);
+				responseMap.put("msg", "File already exists");
 			}
 		}
 		catch(Exception e) {
-			System.out.println("Error: "+e.getLocalizedMessage());
+			e.printStackTrace();
 		}
+		
+		return responseMap;
 	}
-	*/
+	
+	public Map<String, Object> deleteFile(String fileName, boolean updateToServer) {
+		Map<String, Object> responseMap = new HashMap<>();
+		try {
+			File file = new File(path+"/"+fileName);
+			if(file.exists()) {
+				file.delete();
+				if(updateToServer) {
+					Map<String, Object> map = new HashMap<>();
+					map.put("do", "delete");
+					map.put("fileName", fileName);
+					map.put("clientId", ClientBeApplication.clientId);
+					ClientBeApplication.console("file deletion to server: "+fileName,">");
+					updateToServer(map);
+				}
+				responseMap.put("code", 200);
+			}
+			else {
+				responseMap.put("code", 400);
+				responseMap.put("msg", "File does not exist");
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return responseMap;
+	}
 	
 	/*
 	

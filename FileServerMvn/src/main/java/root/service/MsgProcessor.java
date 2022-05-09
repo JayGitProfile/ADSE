@@ -2,7 +2,6 @@ package root.service;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -37,11 +36,25 @@ public class MsgProcessor {
 			case "update":
 				FileUpdateInfoModel fileObj = new FileUpdateInfoModel(map);
 				Server.console(fileObj.getClientId()+" : Update "+fileObj.getFileName(),"<");
-				
 				fileService = new FileService();
-				//fileService.updateFile(obj);
+				fileService.updateFile(fileObj);
+				Server.console("File update to other clients",">");
+				ConnectionService.sendData(SerializationUtils.serialize((Serializable) map));
+				break;
 				
-				Server.console("Updating to other clients",">");
+			case "create":
+				Server.console((String)map.get("clientId")+" : Create file "+(String)map.get("fileName"),"<");
+				fileService = new FileService();
+				fileService.createFile((String)map.get("fileName"));
+				Server.console("File creation to other clients",">");
+				ConnectionService.sendData(SerializationUtils.serialize((Serializable) map));
+				break;
+			
+			case "delete":
+				Server.console((String)map.get("clientId")+" : Delete file "+(String)map.get("fileName"),"<");
+				fileService = new FileService();
+				fileService.deleteFile((String)map.get("fileName"));
+				Server.console("File deletion to other clients",">");
 				ConnectionService.sendData(SerializationUtils.serialize((Serializable) map));
 		}
 	}

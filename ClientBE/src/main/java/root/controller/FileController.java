@@ -39,8 +39,28 @@ public class FileController {
 	}
 	
 	@PostMapping(value="/update", consumes= {MediaType.APPLICATION_JSON_VALUE})
-	public void updateFile(@RequestBody FileUpdateInfoModel fileUpdateObj) {
+	public Map<String, Object> updateFile(@RequestBody FileUpdateInfoModel fileUpdateObj) {
 
-		fileService.updateFile(fileUpdateObj);
+		return fileService.updateFile(fileUpdateObj, true);
+	}
+	
+	/*
+	@PostMapping(value="/create/{fileName}")
+	public void createFile(@PathVariable String fileName) {
+
+		fileService.createFile(fileName, true);
+	}
+	*/
+	
+	@PostMapping(value="/create")
+	public Map<String, Object> createFile2(@RequestBody FileUpdateInfoModel fileUpdateObj) {
+		
+		return fileService.createFile(fileUpdateObj.getFileName(), true);
+	}
+	
+	@PostMapping(value="/delete/{fileName}")
+	public Map<String, Object> deleteFile(@PathVariable String fileName) {
+
+		return fileService.deleteFile(fileName, true);
 	}
 }

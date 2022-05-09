@@ -12,3 +12,10 @@ Main thread (
 
 
 Paste ADSE folder on desktop
+
+C1:
+	private static final int outPort = 9453; //send
+	public static final int inPort = 9555; //receive
+C2:
+	private static final int outPort = 9582; //send
+	public static final int inPort = 9557; //receive

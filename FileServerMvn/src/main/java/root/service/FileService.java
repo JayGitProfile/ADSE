@@ -6,8 +6,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import root.Server;
 import root.model.FileUpdateInfoModel;
 
 public class FileService {
@@ -66,4 +69,35 @@ public class FileService {
 			e.printStackTrace();
 		}
 	}
+	
+	public void createFile(String fileName) {
+		System.out.println("new file: "+fileName);
+		try {
+			File file = new File(path+"/"+fileName);
+			if(!file.exists()) {
+				Server.console("Creating new file: "+fileName,"~");
+				file.createNewFile();
+			}
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void deleteFile(String fileName) {
+		try {
+			File file = new File(path+"/"+fileName);
+			if(file.exists()) {
+				Server.console("Deleting file: "+fileName,"~");
+				file.delete();
+			}
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 }

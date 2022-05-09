@@ -27,7 +27,7 @@ public class UdpHandler implements Runnable{
         while (true) { //listens for incoming msgs
             try {
             	packet = new DatagramPacket(incomingMsg, incomingMsg.length);
-				udpSocket.receive(packet);
+            	udpSocket.receive(packet);
 				ClientBeApplication.console("INCOMING UDP MSG", "~");
 				Thread udpT = new Thread(new MsgHandler(incomingMsg));				
 				udpExecutor.execute(udpT);

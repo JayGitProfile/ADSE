@@ -35,7 +35,7 @@ public class MsgHandler implements Runnable {
     }
 	
 	public void run() { //to test concurrency add while loop with thread sleep
-		System.out.println("msg handler");
+		//System.out.println("msg handler");
 		MsgProcessor processor = new MsgProcessor();
 		try {
 			ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(msgBuffer));
@@ -45,7 +45,7 @@ public class MsgHandler implements Runnable {
 				processor.udpProcess(map);
 			}
 			else {
-				System.out.println("do nothing bruh");
+				//System.out.println("do nothing bruh");
 				//processor.udpProcess(map);
 			}
 			
