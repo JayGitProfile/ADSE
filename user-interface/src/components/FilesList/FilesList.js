@@ -136,7 +136,7 @@ function FilesList() {
               <TableCell align="right">{row.lastMod}</TableCell>
               <TableCell align="right">{row.modifiedby}</TableCell>
               <TableCell align="right">{row.syncstatus}</TableCell>
-              <TableCell align="right">{row.type === 'txt' ?  <span className='EditIcon'><Tooltip title="Edit"
+              <TableCell align="right">{row.fileName.split('.')[row.fileName.split('.').length -1] === 'txt' ?  <span className='EditIcon'><Tooltip title="Edit"
               placement="top"><EditIcon onClick={()=>handleEditOpen(row)}></EditIcon></Tooltip></span> : ''} 
               <span className='DeleteIcon'><Tooltip title="Delete"
               placement="top"><DeleteIcon onClick={() =>handleDeleteOpen(row.fileName)}></DeleteIcon></Tooltip></span></TableCell>
