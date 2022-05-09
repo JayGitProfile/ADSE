@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import root.service.ConnectionService;
+import root.service.ReactConnector;
 
 @SpringBootApplication
 public class ClientBeApplication {
@@ -25,6 +26,11 @@ public class ClientBeApplication {
 		System.setProperty("server.port", "8080");
 		SpringApplication.run(ClientBeApplication.class, args);
 		ConnectionService.init();
+		try {
+			new ReactConnector(9987).start();
+		} catch (Exception e) {
+		}
+		
 	}
 
 }

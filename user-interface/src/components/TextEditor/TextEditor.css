@@ -6,7 +6,7 @@
 
 .editor-field textarea{
     width: 95%;
-    min-height: 500px;
+    min-height: 350px;
     border: 1px solid gray;
 }
 

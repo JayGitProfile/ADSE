@@ -45,7 +45,7 @@ public class MsgProcessor {
 			case "create":
 				Server.console((String)map.get("clientId")+" : Create file "+(String)map.get("fileName"),"<");
 				fileService = new FileService();
-				fileService.createFile((String)map.get("fileName"));
+				fileService.createFile((String)map.get("fileName"), (String)map.get("newContent"));
 				Server.console("File creation to other clients",">");
 				ConnectionService.sendData(SerializationUtils.serialize((Serializable) map));
 				break;

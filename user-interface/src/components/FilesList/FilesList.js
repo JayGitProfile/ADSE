@@ -40,10 +40,9 @@ function FilesList() {
     p: 4,
   };
   const [deleteFileName,setDeleteName] = React.useState('');
-  const [selectedFile,setselectedFile] = React.useState('');
   const [Deleteopen, setDeleteOpen] = React.useState(false);
   const [EditOpen, setEditOpen] = React.useState(false);
-
+  const [FileData,setFileData] = React.useState(''); 
   const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
@@ -69,14 +68,10 @@ function FilesList() {
   }
 
   const handleEditOpen = (row) => {
-    axios.get(`http://localhost:8080/file/read/${row.fileName}`).then(
-      result => {
-        setselectedFile({result,fileName:row.fileName});
+        setFileData(row.fileName)
+        debugger
+        console.log(FileData)
         setEditOpen(true);
-        }
-        ).catch(err => {
-          toast.error("Unable to retrieve the file at this moment. Please try again later.");
-        })
   };
 
   const handleEditClose = () => {
@@ -173,7 +168,7 @@ function FilesList() {
       onClose={handleEditClose}
     >
       <Box sx={style}>
-        <TextEditor  originalfile={selectedFile}></TextEditor>
+        <TextEditor  fileName={FileData}></TextEditor>
       </Box>
     </Modal>
     <ToastContainer

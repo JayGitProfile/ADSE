@@ -45,7 +45,7 @@ public class FileService {
 			e.printStackTrace();
 			System.out.println("Error: "+e.getLocalizedMessage());
 		}
-		ConnectionService.sendCommand(98);
+
 		return fileList;
 	}
 	
@@ -172,12 +172,52 @@ public class FileService {
 			if(!file.exists()) {
 				ClientBeApplication.console("Creating new file: "+fileName,"~");
 				file.createNewFile();
+				
 				if(updateToServer) {
 					Map<String, Object> map = new HashMap<>();
 					map.put("do", "create");
 					map.put("fileName", fileName);
 					map.put("clientId", ClientBeApplication.clientId);
 					ClientBeApplication.console("New file creation to server: "+fileName,">");
+					updateToServer(map);
+				}
+				responseMap.put("code", 200);
+			}
+			else {
+				responseMap.put("code", 400);
+				responseMap.put("msg", "File already exists");
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return responseMap;
+	}
+	
+	public Map<String, Object> createFile(FileUpdateInfoModel newFile, boolean updateToServer) {
+		Map<String, Object> responseMap = new HashMap<>();
+		try {
+			File file = new File(path+"/"+newFile.getFileName());
+			
+			if(!file.exists()) {
+				ClientBeApplication.console("Creating new file: "+newFile.getFileName(),"~");
+				file.createNewFile();
+				
+				FileWriter writer = new FileWriter(file, false);
+				for(String str: newFile.getNewContent().split("\n")) {
+					System.out.println("----------"+str);
+					writer.write(str+"\n");
+				}
+				writer.close();
+					
+				if(updateToServer) {
+					Map<String, Object> map = new HashMap<>();
+					map.put("do", "create");
+					map.put("fileName", newFile.getFileName());
+					map.put("newContent", newFile.getNewContent());
+					map.put("clientId", ClientBeApplication.clientId);
+					ClientBeApplication.console("New file creation to server: "+newFile.getFileName(),">");
 					updateToServer(map);
 				}
 				responseMap.put("code", 200);
@@ -214,6 +254,8 @@ public class FileService {
 				responseMap.put("code", 400);
 				responseMap.put("msg", "File does not exist");
 			}
+			
+			ReactConnector.broadcastMessage("delete");
 		}
 		catch(Exception e) {
 			e.printStackTrace();

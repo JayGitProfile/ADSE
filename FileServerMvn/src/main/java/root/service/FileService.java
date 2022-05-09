@@ -71,12 +71,32 @@ public class FileService {
 	}
 	
 	public void createFile(String fileName) {
-		System.out.println("new file: "+fileName);
 		try {
 			File file = new File(path+"/"+fileName);
 			if(!file.exists()) {
 				Server.console("Creating new file: "+fileName,"~");
 				file.createNewFile();
+			}
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void createFile(String fileName, String newContent) {
+		try {
+			File file = new File(path+"/"+fileName);
+			if(!file.exists()) {
+				Server.console("Creating new file: "+fileName,"~");
+				file.createNewFile();
+				
+				FileWriter writer = new FileWriter(file, false);
+				for(String str: newContent.split("\n")) {
+					System.out.println("----------"+str);
+					writer.write(str+"\n");
+				}
+				writer.close();
 			}
 			
 		}
@@ -98,6 +118,5 @@ public class FileService {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 }

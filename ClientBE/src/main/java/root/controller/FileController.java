@@ -1,11 +1,11 @@
 package root.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +19,7 @@ import root.service.FileService;
 
 @RestController
 @RequestMapping("/file")
+@CrossOrigin(origins ="http://localhost:3000")
 public class FileController {
 
 	@Autowired
@@ -26,7 +27,7 @@ public class FileController {
 	
 	@GetMapping("/list")
 	public List<FileInfoModel> getFileNames() {
-		
+		System.out.println("file list");
 		return fileService.getFileNameList();
 	}
 
@@ -40,7 +41,7 @@ public class FileController {
 	
 	@PostMapping(value="/update", consumes= {MediaType.APPLICATION_JSON_VALUE})
 	public Map<String, Object> updateFile(@RequestBody FileUpdateInfoModel fileUpdateObj) {
-
+		System.out.println(">>> "+fileUpdateObj);
 		return fileService.updateFile(fileUpdateObj, true);
 	}
 	
@@ -54,8 +55,8 @@ public class FileController {
 	
 	@PostMapping(value="/create")
 	public Map<String, Object> createFile2(@RequestBody FileUpdateInfoModel fileUpdateObj) {
-		
-		return fileService.createFile(fileUpdateObj.getFileName(), true);
+		System.out.println("cccccrrrr "+fileUpdateObj);
+		return fileService.createFile(fileUpdateObj, true);
 	}
 	
 	@PostMapping(value="/delete/{fileName}")
