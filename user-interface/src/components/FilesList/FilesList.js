@@ -81,7 +81,7 @@ function FilesList() {
     setEditOpen(false);
   };
 
-  const [files,setFiles] = React.useState([{fileName:'alpha.txt', type:'txt'}]);
+  const [files,setFiles] = React.useState([]);
   useEffect(() => {
     axios.get('localhost:8080/file/list').then(data => {
       setFiles(data);
@@ -117,7 +117,7 @@ function FilesList() {
               <TableCell align="right">{row.size}</TableCell>
               <TableCell align="right">{row.createddate}</TableCell>
               <TableCell align="right">{row.createdby}</TableCell>
-              <TableCell align="right">{row.lastmodified}</TableCell>
+              <TableCell align="right">{row.lastMod}</TableCell>
               <TableCell align="right">{row.modifiedby}</TableCell>
               <TableCell align="right">{row.syncstatus}</TableCell>
               <TableCell align="right">{row.type === 'txt' ?  <span className='EditIcon'><Tooltip title="Edit"
