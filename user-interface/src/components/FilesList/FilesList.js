@@ -59,7 +59,7 @@ function FilesList() {
   };
 
   const handleDelete = () => {
-    axios.post(`localhost:8080/file/delete/${deleteFileName}`).then(() => {
+    axios.post(`http://localhost:8080/file/delete/${deleteFileName}`).then(() => {
       toast.success('File deleted Sucessfully');
     }).catch(
       toast.error('Unable to delete the file. Please Try again.')
@@ -68,7 +68,7 @@ function FilesList() {
   }
 
   const handleEditOpen = (row) => {
-    axios.get(`localhost:8080/file/read/${row.fileName}`).then(
+    axios.get(`http://localhost:8080/file/read/${row.fileName}`).then(
       result => {
         setselectedFile({result,fileName:row.fileName});
         setEditOpen(true);
@@ -86,15 +86,15 @@ function FilesList() {
 
 
   function getFilesList() {
-    axios.get('localhost:8080/file/list').then(data => {
-      setFiles(data);
+    axios.get('http://localhost:8080/file/list').then(data => {
+      setFiles(data.data);
     })
   }
 
 
   useEffect(() => {
     if(!connected) {
-    let socket = new WebSocket("localhost:8080").onopen(() => {
+    let socket = new WebSocket("ws://localhost:8080/").onopen(() => {
       getFilesList()
       setConnected(true);
     });

@@ -33,7 +33,7 @@ function App() {
     const reader = new FileReader();
     reader.onload = (e) => {
       selectedFile = {fileName:info.name,newContent:e.target.result};
-      axios.post('localhost:8080/file/create',selectedFile).then(
+      axios.post('http://localhost:8080/file/create',selectedFile).then(
         toast.success("File Uploaded Sucessfully")
       ).catch(
         toast.error('File upload failed! Please try again.')
