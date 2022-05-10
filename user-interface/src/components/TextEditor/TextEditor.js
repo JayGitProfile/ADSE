@@ -5,22 +5,24 @@ import { Button } from "@mui/material";
 import Pagination from '@mui/material/Pagination';
 import './TextEditor.css'
 function TextEditor({fileName}) {
+  const [initial,setinitial] = useState(false)
   const [page,setpage]=useState(1)
   const [totalpages,setTotalPages]=useState(0);
   const [data,setData] = useState('');
    useEffect(()=> {
-  do{
-    axios.get(`http://localhost:8080/file/read/${fileName}`).then((data)=>{
-      debugger
-      setpage(data.page);
-      setData(data[fileName]);
-      setTotalPages(data.totalPages);
-   })}while(false)
+    if(!initial){
+      setinitial(true)
+      axios.get(`http://localhost:8080/file/read/${fileName}`).then((result)=>{
+        setpage(result.data.page);
+        setData(result.data[fileName]);
+        setTotalPages(result.data.totalPages);
+    })}
   })
   const [changed, setchanged] = useState(false);
   function changeContent(event) {
-    setData(event.target.value);
     setchanged(true);
+    setData(event.target.value);
+   
   }
 
   function updateContent() {
@@ -33,10 +35,11 @@ function TextEditor({fileName}) {
   }
 
   function updatePage(event) {
-    axios.get(`http://localhost:8080/file/read/${fileName}/${event.target.value}/${totalpages}`).then((data) => {
-      setpage(data.page);
-      setData(data[fileName]);
-      setTotalPages(data.totalPages);
+    axios.get(`http://localhost:8080/file/read/${fileName}/${Number(event.target.innerText)}/${totalpages}`).then((result) => {
+      debugger
+      setpage(result.data.page);
+      setData(result.data[fileName]);
+      setTotalPages(result.data.totalPages);
     })
   }
 

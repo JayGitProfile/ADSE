@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ReactConnector extends WebSocketServer {
 
 	public static Set<WebSocket> conns;
+	public static WebSocket wsTemp;
 	
 	public ReactConnector(int port) throws UnknownHostException {
 		super(new InetSocketAddress(port));
@@ -32,8 +33,9 @@ public class ReactConnector extends WebSocketServer {
             String messageJson = mapper.writeValueAsString(map);
             for (WebSocket sock : conns) {
             	System.out.println("hook "+messageJson);
-                sock.send(messageJson);
+                //sock.send(messageJson);
             }
+            wsTemp.send(messageJson);
         } catch (JsonProcessingException e) {
         }
     }
@@ -41,7 +43,9 @@ public class ReactConnector extends WebSocketServer {
 	@Override
 	public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
         conns.add(webSocket);
-        System.out.println("on open");		
+        wsTemp = webSocket;
+        webSocket.send("bro");
+        System.out.println("on open "+"Connection established from: " + webSocket.getRemoteSocketAddress().getHostString());		
 	}
 
 	@Override
@@ -53,6 +57,7 @@ public class ReactConnector extends WebSocketServer {
 	@Override
 	public void onMessage(WebSocket conn, String message) {
 		// TODO Auto-generated method stub
+		System.out.println("incoming react socket msg "+message);
 		
 	}
 

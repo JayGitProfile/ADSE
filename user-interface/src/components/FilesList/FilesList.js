@@ -25,8 +25,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TextEditor from '../TextEditor/TextEditor'
 
-function FilesList() {
+function FilesList({refresh}) {
   const [connected,setConnected] = React.useState(false);
+  const [prevrefresh,setprevrefresh] = React.useState(false);
   const style = {
     position: 'absolute',
     top: '50%',
@@ -59,11 +60,14 @@ function FilesList() {
 
   const handleDelete = () => {
 
-    axios.post(`http://localhost:8080/file/delete/${deleteFileName}`).then(() => {
-      toast.success('File deleted Sucessfully');
-    }).catch(
-      toast.error('Unable to delete the file. Please Try again.')
-    )
+    axios.post(`http://localhost:8080/file/delete/${deleteFileName}`).then(({data}) => {
+      debugger
+      if (data['code'] !== 200) {
+        toast.error(data['msg'])
+      } else {
+      toast.success('File deleted Sucessfully'); }
+      getFilesList();
+  })
     setDeleteOpen(false)
   }
 
@@ -76,6 +80,7 @@ function FilesList() {
 
   const handleEditClose = () => {
     setEditOpen(false);
+    getFilesList();
   };
 
   const [files,setFiles] = React.useState([]);
@@ -89,8 +94,12 @@ function FilesList() {
 
 
   useEffect(() => {
+    if(refresh !== prevrefresh) {
+      setprevrefresh(!prevrefresh);
+      getFilesList()
+    }
     if(!connected) {
-    let socket = new WebSocket("ws://localhost:9987").onopen= () => {
+    var socket = new WebSocket("ws://localhost:9987").onopen= (data) => {
       getFilesList()
       setConnected(true);
     }

@@ -12,6 +12,7 @@ import syncicon from './resources/sync.png';
 
 function App() {
   const [isSuspended,setisSuspended] = useState(false);
+  const [refresh,setrefresh] = useState(true);
   let selectedFile = null
   function suspendorresume() {
     setisSuspended(!isSuspended)
@@ -33,10 +34,13 @@ function App() {
     const reader = new FileReader();
     reader.onload = (e) => {
       selectedFile = {fileName:info.name,newContent:e.target.result};
-      axios.post('http://localhost:8080/file/create',selectedFile).then(
-        toast.success("File Uploaded Sucessfully")
-      ).catch(
-        toast.error('File upload failed! Please try again.')
+      axios.post('http://localhost:8080/file/create',selectedFile).then(({data})=>{
+        if (data['code'] !== 200) {
+          toast.error(data['msg'])
+        } else {
+          toast.dismiss()
+        toast.success("File Uploaded Sucessfully")}
+        setrefresh(!refresh);}
       )
     };
     reader.readAsText(e.target.files[0]);
@@ -70,7 +74,7 @@ function App() {
       </div>
      </p>
 
-     <FilesList/>
+     <FilesList refresh={refresh}/>
 
      <ToastContainer
         position="bottom-center"
