@@ -32,6 +32,7 @@ public class FileService {
 	}
 	
 	public void updateFile(FileUpdateInfoModel fileUpdateObj) {
+		//System.out.println("update: "+fileUpdateObj);
 		try {
 			File fOld = new File(path+"/"+fileUpdateObj.getFileName());
 			File fNew = new File(path+"/"+fileUpdateObj.getFileName());
@@ -44,6 +45,25 @@ public class FileService {
 				//System.out.println("update starts at line: "+start+" finishes at: "+(end-1));
 				List<String> fileDataList = new ArrayList<>();
 			
+				String[] ori = fileUpdateObj.getOriginal().split("\n");
+				String[] newC = fileUpdateObj.getNewContent().split("\n");
+				List<String> changesList = new ArrayList<>();
+				for(int i=0;i<newC.length;i++){
+					//System.out.println(i);
+					if(i<ori.length) {
+						if(!ori[i].equals(newC[i])) {
+							//System.out.println("----> "+newC[i]);
+							changesList.add(newC[i]);
+							System.out.println("---> line "+i+": "+newC[i]);
+						}
+					}
+					else {
+						//System.out.println("----> "+newC[i]);
+						changesList.add(newC[i]);
+						System.out.println("---> line "+i+": "+newC[i]);
+					}
+				}
+				
 				for(int i=1;(line=bReader.readLine())!=null;i++) {
 					if(i>=start && i<end) {
 						//System.out.println("dont add line: "+i+" "+line);

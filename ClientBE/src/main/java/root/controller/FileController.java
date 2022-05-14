@@ -41,7 +41,7 @@ public class FileController {
 	
 	@PostMapping(value="/update", consumes= {MediaType.APPLICATION_JSON_VALUE})
 	public Map<String, Object> updateFile(@RequestBody FileUpdateInfoModel fileUpdateObj) {
-		System.out.println(">>> "+fileUpdateObj);
+		//System.out.println(">>> "+fileUpdateObj);
 		return fileService.updateFile(fileUpdateObj, true);
 	}
 	
@@ -55,7 +55,7 @@ public class FileController {
 	
 	@PostMapping(value="/create")
 	public Map<String, Object> createFile2(@RequestBody FileUpdateInfoModel fileUpdateObj) {
-		System.out.println("cccccrrrr "+fileUpdateObj);
+		//System.out.println("cccccrrrr "+fileUpdateObj);
 		return fileService.createFile(fileUpdateObj, true);
 	}
 	

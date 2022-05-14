@@ -10,7 +10,7 @@ import root.model.HNode;
 public class MsgService {
 	
 	public byte[] compress(String msg) {
-		System.out.println("comp "+msg);
+		System.out.println("\ncompressing: "+msg);
 		build(msg);
 		return (msg+"_compressed").getBytes();
 	}
@@ -90,16 +90,16 @@ public class MsgService {
 		Map<Character, String> huffmanCode = new HashMap<>();
 		encode(root, "", huffmanCode);
 
-		System.out.println("The Huffman Codes forthe given text are: " + huffmanCode);
-		System.out.println("The original text is: " + text);
+		//System.out.println("The Huffman Codes forthe given text are: " + huffmanCode);
+		System.out.println("The original text size: " + text.length()+" bytes");
 
 		StringBuilder encodedStr = new StringBuilder();
 		for(char c: text.toCharArray()) {
 			encodedStr.append(huffmanCode.get(c));
 		}
 
-		System.out.println("The encoded text is: " + encodedStr);
-		System.out.print("The decoded text is: ");
+		System.out.println("The encoded text size: " + encodedStr.length()/8);
+		//System.out.print("The decoded text is: ");
 
 		if(root.isLeaf()) {
 			while(root.getFrequency()-1 > 0) {

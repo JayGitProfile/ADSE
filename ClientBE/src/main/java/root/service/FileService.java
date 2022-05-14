@@ -100,37 +100,49 @@ public class FileService {
 			File fOld = new File(path+"/"+fileUpdateObj.getFileName());
 			File fNew = new File(path+"/"+fileUpdateObj.getFileName());
 			if(fOld.exists()) {
-				if(fileUpdateObj.getNewContent()!=fileUpdateObj.getOriginal()) {
+				if(!fileUpdateObj.getNewContent().equals(fileUpdateObj.getOriginal())) {
 					FileReader fReader = new FileReader(fOld);
 					BufferedReader bReader = new BufferedReader(fReader);
 					String line;
 					int start = (fileUpdateObj.getPageIndex()*linesPerPage)-(linesPerPage-1);
 					int end = start+linesPerPage;
-					//System.out.println("update starts at line: "+start+" finishes at: "+(end-1));
 					List<String> fileDataList = new ArrayList<>();
 				
-					for(int i=1;(line=bReader.readLine())!=null;i++) {
-						if(i>=start && i<end) {
-							//System.out.println("dont add line: "+i+" "+line);
+					String[] ori = fileUpdateObj.getOriginal().split("\n");
+					String[] newC = fileUpdateObj.getNewContent().split("\n");
+					List<String> changesList = new ArrayList<>();
+					MsgService msgServ = new MsgService();
+					for(int i=0;i<newC.length;i++) {
+						//System.out.println(i);
+						if(i<ori.length) {
+							if(!ori[i].equals(newC[i])) {
+								//System.out.println("----> "+newC[i]);
+								changesList.add(newC[i]);
+								System.out.println("---> line "+i+": "+newC[i]+"\tcompressed: "+msgServ.compress(newC[i]));
+							}
 						}
 						else {
-							fileDataList.add(line);
-							//System.out.println("add line: "+i+" "+line);
+							//System.out.println("----> "+newC[i]);
+							changesList.add(newC[i]);
+							System.out.println("---> line "+i+": "+newC[i]);
 						}
 					}
-					//System.out.println(start-1+" "+fileDataList.size());
+					
+					for(int i=1;(line=bReader.readLine())!=null;i++) {
+						if(!(i>=start && i<end)) {
+							
+							fileDataList.add(line);
+						}
+					}
 					fileDataList.addAll(start-1, Arrays.asList(fileUpdateObj.getNewContent().split("\n")));
 					FileWriter writer = new FileWriter(fNew, false);
+					
 					for(String str: fileDataList) {
-						//System.out.println("~~ "+str);
 						writer.write(str+"\n");
 					}
 					writer.close();
 					fReader.close();
 					
-					//Map<String, Object> map = new HashMap<>();
-					//map.put("update",fileUpdateObj);
-					//map.put("clientId", ClientBeApplication.clientId);
 					
 					if(updateToServer) {
 						Map<String, Object> map = fileUpdateObj.covertToMap();
@@ -138,6 +150,9 @@ public class FileService {
 						
 						updateToServer(map);
 					}
+				}
+				else {
+					//System.out.println("print same content");
 				}
 				responseMap.put("code", 200);
 			}

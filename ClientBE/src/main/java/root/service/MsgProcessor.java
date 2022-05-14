@@ -23,7 +23,10 @@ public class MsgProcessor {
 				
 			case "create":
 				fileService = new FileService();
-				fileService.createFile((String)map.get("fileName"), false);
+				//fileService.createFile((String)map.get("fileName"), false);
+				FileUpdateInfoModel obj = new FileUpdateInfoModel(map);
+				
+				fileService.createFile(obj, false);
 				break;
 				
 			case "delete":

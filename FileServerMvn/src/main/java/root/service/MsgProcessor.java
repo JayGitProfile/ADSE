@@ -31,7 +31,7 @@ public class MsgProcessor {
 	}
 
 	public void udpProcess(Map<String, Object> map) {
-		System.out.println(map.keySet());
+		//System.out.println(map.keySet());
 		switch((String)map.get("do")) {
 			case "update":
 				FileUpdateInfoModel fileObj = new FileUpdateInfoModel(map);

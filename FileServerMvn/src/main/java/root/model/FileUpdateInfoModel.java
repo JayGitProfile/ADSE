@@ -66,7 +66,7 @@ public class FileUpdateInfoModel implements Serializable{
 	}
 	
 	@Override
-	public String toString() {
+	public String toString() {		
 		return "FileUpdateInfoModel [fileName=" + fileName + ", pageIndex=" + pageIndex + ", newContent=" + newContent
 				+ ", original=" + original + ", clientId=" + clientId + "]";
 	}
