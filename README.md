@@ -19,3 +19,10 @@ C1:
 C2:
 	private static final int outPort = 9582; //send
 	public static final int inPort = 9557; //receive
+
+
+inside user interface folder
+npm i
+npm start
+
+esc :wqexit
